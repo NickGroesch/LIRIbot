@@ -1,8 +1,8 @@
-// psuedocode
 require("dotenv").config();
 const keys = require("./keys.js");
 const fs = require("fs");
 const inquirer = require("inquirer");
+const axios = require("axios");
 // var spotify = new Spotify(keys.spotify);
 
 // user command line input is parsed
@@ -22,6 +22,7 @@ function execute(command, argument) {
       break;
     case "movie-this":
       console.log("OMBDazzle: ", argument);
+      omdb(argument);
       break;
     case "do-what-it-says":
       doIt();
@@ -36,17 +37,16 @@ function execute(command, argument) {
 // spotify
 // movie
 
-// this function reads the file, then parses it, and based on the contents it will call other functions with arguments
+// this function reads the random.txt file, then parses it, and based on the contents it will call other functions with arguments
 function doIt() {
   fs.readFile("random.txt", "utf8", function(error, data) {
     // we should notify the user of errors
     if (error) {
-      return console.log(error);
+      return console.log("random read error " + error);
     }
     let random = data.split(",");
     let command = random[0];
     let argument = random[1];
-    console.log(command, argument);
     // here we have to circumevent the practical joker who overwrites "do-what-it-says" to random.txt in order to protect the integrity of our call stack
     if (command == "do-what-it-says") {
       console.log(
@@ -57,6 +57,7 @@ function doIt() {
     }
   });
 }
+// this function inquires the intent of the user, who may not be good at remembering commands
 function inquire() {
   inquirer
     .prompt([
@@ -93,7 +94,33 @@ function inquire() {
       }
     });
 }
-
+function bands(argument) {}
+// this function's name is short for "SPOTIFy your queRY"
+function spotifry(argument) {}
+function omdb(argument) {
+  argument = argument.split(" ").join("+");
+  axios
+    .get(`http://www.omdbapi.com/?t=${argument}&apikey=trilogy`)
+    .then(function(omdb) {
+      console.log("----------------------------------");
+      console.log(omdb.data.Title);
+      console.log(omdb.data.Year);
+      console.log(
+        omdb.data.Ratings[0].Source + " Rating: " + omdb.data.Ratings[0].Value
+      );
+      console.log(
+        omdb.data.Ratings[1].Source + " Rating: " + omdb.data.Ratings[1].Value
+      );
+      console.log(omdb.data.Country);
+      console.log(omdb.data.Language);
+      console.log(omdb.data.Plot);
+      console.log(omdb.data.Actors);
+      console.log("----------------------------------");
+    })
+    .catch(function(error) {
+      console.log("OMBDisaster:" + error);
+    });
+}
 //      fs.readFile(random.txt
 //          data.split(', ')
 
