@@ -40,6 +40,7 @@ If you haven't written a markdown file yet, [click here for a rundown](https://g
 
 ### Instructions
 
+<!--
 1. Navigate to the root of your project and run `npm init -y` &mdash; this will initialize a `package.json` file for your project. The `package.json` file is required for installing third party npm packages and saving their version numbers. If you fail to initialize a `package.json` file, it will be troublesome, and at times almost impossible for anyone else to run your code after cloning your project.
 
 2. Make a `.gitignore` file and add the following lines to it. This will tell git not to track these files, and thus they won't be committed to Github.
@@ -95,13 +96,13 @@ require("dotenv").config();
 
 ```js
 var keys = require("./keys.js");
-```
+``` -->
 
-- You should then be able to access your keys information like so
+<!-- - You should then be able to access your keys information like so
 
   ```js
   var spotify = new Spotify(keys.spotify);
-  ```
+  ``` -->
 
 9. Make it so liri.js can take in one of the following commands:
 
