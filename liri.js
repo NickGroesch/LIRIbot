@@ -24,33 +24,10 @@ function execute(command, argument) {
       console.log("OMBDazzle: ", argument);
       break;
     case "do-what-it-says":
-      console.log("RESPECT. MY. AUTHORITY.");
       doIt();
       break;
     default:
-      console.log("you are in default");
-
-      inquirer
-        .prompt([
-          {
-            type: "list",
-            message: "What can LIRI do for you?",
-            choices: [
-              "concert-this",
-              "spotify-this-song",
-              "movie-this",
-              "do-what-it-says"
-            ],
-            name: "command"
-          }
-        ])
-        .then(function(input) {
-          console.log(input.command);
-          let command = input.command;
-          let argument;
-          console.log(command);
-        });
-
+      inquire();
       break;
   }
 }
@@ -70,10 +47,53 @@ function doIt() {
     let command = random[0];
     let argument = random[1];
     console.log(command, argument);
-
-    execute(command, argument);
+    // here we have to circumevent the practical joker who overwrites "do-what-it-says" to random.txt in order to protect the integrity of our call stack
+    if (command == "do-what-it-says") {
+      console.log(
+        "You think you're infinitely funny, but who's laughing now? ha-HA, mwa-ha-HA."
+      );
+    } else {
+      execute(command, argument);
+    }
   });
 }
+function inquire() {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        message: "What can LIRI do for you?",
+        choices: [
+          "concert-this",
+          "spotify-this-song",
+          "movie-this",
+          "do-what-it-says"
+        ],
+        name: "command"
+      }
+    ])
+    .then(function(input) {
+      let command = input.command;
+      if (command == "do-what-it-says") {
+        console.log(`Of course, LIRI is always happy to ${command}.`);
+        execute(command);
+      } else {
+        inquirer
+          .prompt([
+            {
+              type: "input",
+              message: `Of course, LIRI is always happy to ${command}, but which one did you mean?`,
+              name: "argument"
+            }
+          ])
+          .then(function(input) {
+            let argument = input.argument;
+            execute(command, argument);
+          });
+      }
+    });
+}
+
 //      fs.readFile(random.txt
 //          data.split(', ')
 
