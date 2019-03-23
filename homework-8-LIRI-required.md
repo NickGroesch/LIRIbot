@@ -116,7 +116,7 @@ var keys = require("./keys.js");
 
 ### What Each Command Should Do
 
-1. `node liri.js concert-this <artist/band name here>`
+<!-- 1. `node liri.js concert-this <artist/band name here>`
 
    - This will search the Bands in Town Artist Events API (`"https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp"`) for an artist and render the following information about each event to the terminal:
 
@@ -124,7 +124,7 @@ var keys = require("./keys.js");
 
      - Venue location
 
-     - Date of the Event (use moment to format this as "MM/DD/YYYY")
+     - Date of the Event (use moment to format this as "MM/DD/YYYY") -->
 
 2. `node liri.js spotify-this-song '<song name here>'`
 
@@ -154,7 +154,7 @@ var keys = require("./keys.js");
 
 3. `node liri.js movie-this '<movie name here>'`
 
-   - This will output the following information to your terminal/bash window:
+   <!-- - This will output the following information to your terminal/bash window:
 
      ```
        * Title of the movie.
@@ -165,15 +165,15 @@ var keys = require("./keys.js");
        * Language of the movie.
        * Plot of the movie.
        * Actors in the movie.
-     ```
+     ``` -->
 
-   - If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
+   <!-- - If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
 
      - If you haven't watched "Mr. Nobody," then you should: <http://www.imdb.com/title/tt0485947/>
 
      - It's on Netflix!
 
-   - You'll use the `axios` package to retrieve data from the OMDB API. Like all of the in-class activities, the OMDB API requires an API key. You may use `trilogy`.
+   - You'll use the `axios` package to retrieve data from the OMDB API. Like all of the in-class activities, the OMDB API requires an API key. You may use `trilogy`. -->
 
 4. `node liri.js do-what-it-says`
 

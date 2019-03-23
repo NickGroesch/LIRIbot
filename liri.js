@@ -3,6 +3,7 @@ const keys = require("./keys.js");
 const fs = require("fs");
 const inquirer = require("inquirer");
 const axios = require("axios");
+const moment = require("moment");
 // var spotify = new Spotify(keys.spotify);
 
 // user command line input is parsed
@@ -15,13 +16,12 @@ execute(command, argument);
 function execute(command, argument) {
   switch (command) {
     case "concert-this":
-      console.log("Bands in town: ", argument);
+      bands(argument);
       break;
     case "spotify-this-song":
       console.log("get spotifried: ", argument);
       break;
     case "movie-this":
-      console.log("OMBDazzle: ", argument);
       omdb(argument);
       break;
     case "do-what-it-says":
@@ -32,10 +32,7 @@ function execute(command, argument) {
       break;
   }
 }
-// functions for
-// concert
-// spotify
-// movie
+// still need to do spotify
 
 // this function reads the random.txt file, then parses it, and based on the contents it will call other functions with arguments
 function doIt() {
@@ -94,10 +91,42 @@ function inquire() {
       }
     });
 }
-function bands(argument) {}
+// here we get the concert information from Bands in Town, using Trilogy's generously supplied app id
+function bands(argument) {
+  if (argument == "") {
+    argument = "backstreet boys";
+  }
+  axios
+    .get(
+      "https://rest.bandsintown.com/artists/" +
+        argument +
+        "/events?app_id=codingbootcamp"
+    )
+    .then(function(concert) {
+      var bit = concert.data;
+      for (i = 0; i < bit.length; i++) {
+        console.log("----------------------------------");
+        console.log(moment(bit[i].datetime).format("MM/DD/YYYY"));
+        console.log(bit[i].venue.name);
+        console.log(
+          bit[i].venue.city,
+          bit[i].venue.region,
+          bit[i].venue.country
+        );
+      }
+      console.log("----------------------------------");
+    })
+    .catch(function(error) {
+      console.log("Bands In Town Error: " + error);
+    });
+}
 // this function's name is short for "SPOTIFy your queRY"
 function spotifry(argument) {}
+// this function gets the data we want from omdb
 function omdb(argument) {
+  if (argument == "") {
+    argument = "Mr. Nobody";
+  }
   argument = argument.split(" ").join("+");
   axios
     .get(`http://www.omdbapi.com/?t=${argument}&apikey=trilogy`)
