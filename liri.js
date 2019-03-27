@@ -1,3 +1,4 @@
+// on loading
 require("dotenv").config();
 const keys = require("./keys.js");
 const fs = require("fs");
@@ -7,10 +8,10 @@ const moment = require("moment");
 var Spotify = require("node-spotify-api");
 var spotify = new Spotify(keys.spotify);
 
-// to facilitate working with the log later we seperate each separate run of the program with ";;;;",
-// each instance of logging with ";;;", and each logged variable with ";;". these infrequently occurring sequences
-// can be used to split the log string into an array of arrays
-fs.appendFile("log.txt", ";;;", function(err) {
+// to facilitate working with the log later we separate each unique execution of the program with ";;;;",
+// each instance of logging with ";;;", and each logged variable with ";;". these infrequently occurring string sequences
+// can be used to split the log string into an array of arrays splitting first by ";;;;", then ";;;", then";;"
+fs.appendFile("log.txt", ";;;;", function(err) {
   if (err) {
     console.log("loging error: ", err);
   }
@@ -18,10 +19,14 @@ fs.appendFile("log.txt", ";;;", function(err) {
 
 // this function conveniently records a .txt log of processes and results while logging information to the console.
 function log(x, y) {
+  // if we only have one argument to log we can define the second argument as a space which will allow good printing and preserve our string splitting scheme
+  if (!y) {
+    y = " ";
+  }
   console.log(x + " " + y);
   fs.appendFile("log.txt", ";;; " + x + ";;" + y, function(err) {
     if (err) {
-      console.log("loging error: ", err);
+      console.log("logging error: ", err);
     }
   });
 }
@@ -33,7 +38,7 @@ let argument = process.argv.slice(3).join(" ");
 // I encapsulate the switch-case logic for the purpose of calling it again later within the doIt() and inquire() subroutines
 execute(command, argument);
 function execute(command, argument) {
-  log(command, argument);
+  log("command and argument: " + command, argument);
   switch (command) {
     case "concert-this":
       bands(argument);
@@ -52,8 +57,6 @@ function execute(command, argument) {
       break;
   }
 }
-// HEY-still need to do spotify
-
 // this function reads the random.txt file, then parses it, and based on the contents it will call other functions with arguments
 function doIt() {
   fs.readFile("random.txt", "utf8", function(error, data) {
@@ -149,12 +152,12 @@ function spotifry(argument) {
     if (err) {
       return console.log("Spotifry error occurred: " + err);
     }
-    console.log("----------------------------------");
-    console.log(`Artist: ` + data.tracks.items[0].artists[0].name);
-    console.log(`Song Title: ` + data.tracks.items[0].name);
-    console.log(`Spotify url: ` + data.tracks.items[0].external_urls.spotify);
-    console.log(`Album: ` + data.tracks.items[0].album.name);
-    console.log("----------------------------------");
+    log("----------------------------------");
+    log(`Artist: ` + data.tracks.items[0].artists[0].name);
+    log(`Song Title: ` + data.tracks.items[0].name);
+    log(`Spotify url: ` + data.tracks.items[0].external_urls.spotify);
+    log(`Album: ` + data.tracks.items[0].album.name);
+    log("----------------------------------");
   });
 }
 // this function gets the data we want from omdb
