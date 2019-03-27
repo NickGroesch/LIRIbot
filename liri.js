@@ -4,22 +4,42 @@ const fs = require("fs");
 const inquirer = require("inquirer");
 const axios = require("axios");
 const moment = require("moment");
-// var spotify = new Spotify(keys.spotify);
+var Spotify = require("node-spotify-api");
+var spotify = new Spotify(keys.spotify);
+
+// to facilitate working with the log later we seperate each separate run of the program with ";;;;",
+// each instance of logging with ";;;", and each logged variable with ";;". these infrequently occurring sequences
+// can be used to split the log string into an array of arrays
+fs.appendFile("log.txt", ";;;", function(err) {
+  if (err) {
+    console.log("loging error: ", err);
+  }
+});
+
+// this function conveniently records a .txt log of processes and results while logging information to the console.
+function log(x, y) {
+  console.log(x + " " + y);
+  fs.appendFile("log.txt", ";;; " + x + ";;" + y, function(err) {
+    if (err) {
+      console.log("loging error: ", err);
+    }
+  });
+}
 
 // user command line input is parsed
 let command = process.argv[2];
 let argument = process.argv.slice(3).join(" ");
-// *give an inquirer if no input, with conditional in the promise
 
-// I encapsulate the switch-case logic for the purpose of calling it again later within the doIt() and default() subroutines
+// I encapsulate the switch-case logic for the purpose of calling it again later within the doIt() and inquire() subroutines
 execute(command, argument);
 function execute(command, argument) {
+  log(command, argument);
   switch (command) {
     case "concert-this":
       bands(argument);
       break;
     case "spotify-this-song":
-      console.log("get spotifried: ", argument);
+      spotifry(argument);
       break;
     case "movie-this":
       omdb(argument);
@@ -32,7 +52,7 @@ function execute(command, argument) {
       break;
   }
 }
-// still need to do spotify
+// HEY-still need to do spotify
 
 // this function reads the random.txt file, then parses it, and based on the contents it will call other functions with arguments
 function doIt() {
@@ -41,12 +61,13 @@ function doIt() {
     if (error) {
       return console.log("random read error " + error);
     }
+    // we split the random file into a command and an argument
     let random = data.split(",");
     let command = random[0];
     let argument = random[1];
     // here we have to circumevent the practical joker who overwrites "do-what-it-says" to random.txt in order to protect the integrity of our call stack
     if (command == "do-what-it-says") {
-      console.log(
+      log(
         "You think you're infinitely funny, but who's laughing now? ha-HA, mwa-ha-HA."
       );
     } else {
@@ -73,14 +94,14 @@ function inquire() {
     .then(function(input) {
       let command = input.command;
       if (command == "do-what-it-says") {
-        console.log(`Of course, LIRI is always happy to ${command}.`);
+        log(`Of course, LIRI is always happy to ${command}.`);
         execute(command);
       } else {
         inquirer
           .prompt([
             {
               type: "input",
-              message: `Of course, LIRI is always happy to ${command}, but which one did you mean?`,
+              message: `Of course, LIRI is always happy to ${command}, but which one were you referring to?`,
               name: "argument"
             }
           ])
@@ -105,23 +126,37 @@ function bands(argument) {
     .then(function(concert) {
       var bit = concert.data;
       for (i = 0; i < bit.length; i++) {
-        console.log("----------------------------------");
-        console.log(moment(bit[i].datetime).format("MM/DD/YYYY"));
-        console.log(bit[i].venue.name);
-        console.log(
-          bit[i].venue.city,
-          bit[i].venue.region,
-          bit[i].venue.country
-        );
+        log("----------------------------------");
+        log(moment(bit[i].datetime).format("MM/DD/YYYY"));
+        log(bit[i].venue.name);
+        log(bit[i].venue.city, bit[i].venue.region, bit[i].venue.country);
       }
-      console.log("----------------------------------");
+      log("----------------------------------");
     })
     .catch(function(error) {
-      console.log("Bands In Town Error: " + error);
+      log("Bands In Town Error: " + error);
     });
 }
 // this function's name is short for "SPOTIFy your queRY"
-function spotifry(argument) {}
+function spotifry(argument) {
+  if (!argument) {
+    argument = "'The Sign' Ace of Base";
+  }
+  spotify.search({ type: "track", query: argument, limit: 1 }, function(
+    err,
+    data
+  ) {
+    if (err) {
+      return console.log("Spotifry error occurred: " + err);
+    }
+    console.log("----------------------------------");
+    console.log(`Artist: ` + data.tracks.items[0].artists[0].name);
+    console.log(`Song Title: ` + data.tracks.items[0].name);
+    console.log(`Spotify url: ` + data.tracks.items[0].external_urls.spotify);
+    console.log(`Album: ` + data.tracks.items[0].album.name);
+    console.log("----------------------------------");
+  });
+}
 // this function gets the data we want from omdb
 function omdb(argument) {
   if (argument == "") {
@@ -131,26 +166,22 @@ function omdb(argument) {
   axios
     .get(`http://www.omdbapi.com/?t=${argument}&apikey=trilogy`)
     .then(function(omdb) {
-      console.log("----------------------------------");
-      console.log(omdb.data.Title);
-      console.log(omdb.data.Year);
-      console.log(
+      log("----------------------------------");
+      log(omdb.data.Title);
+      log(omdb.data.Year);
+      log(
         omdb.data.Ratings[0].Source + " Rating: " + omdb.data.Ratings[0].Value
       );
-      console.log(
+      log(
         omdb.data.Ratings[1].Source + " Rating: " + omdb.data.Ratings[1].Value
       );
-      console.log(omdb.data.Country);
-      console.log(omdb.data.Language);
-      console.log(omdb.data.Plot);
-      console.log(omdb.data.Actors);
-      console.log("----------------------------------");
+      log(omdb.data.Country);
+      log(omdb.data.Language);
+      log(omdb.data.Plot);
+      log(omdb.data.Actors);
+      log("----------------------------------");
     })
     .catch(function(error) {
-      console.log("OMBDisaster:" + error);
+      log("OMBDisaster:" + error);
     });
 }
-//      fs.readFile(random.txt
-//          data.split(', ')
-
-// log.txt appendFile.
