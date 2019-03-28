@@ -1,44 +1,12 @@
-# LIRIbot
-
-HW 8+
-
 # LIRI Bot
 
-### Overview
+_A Trilogy Boot Camp Homework Assignment_ by **Nick Groesch**
 
-In this assignment, you will make LIRI. LIRI is like iPhone's SIRI. However, while SIRI is a Speech Interpretation and Recognition Interface, LIRI is a _Language_ Interpretation and Recognition Interface. LIRI will be a command line node app that takes in parameters and gives you back data.
+## **Meet LIRI.**
 
-### Before You Begin
+LIRI is like iPhone's SIRI, but old school. LIRI is a command line node app that takes in parameters and gives back data.
 
-1. LIRI will search Spotify for songs, Bands in Town for concerts, and OMDB for movies.
-
-2. Make a new GitHub repository called liri-node-app and clone it to your computer.
-
-3. To retrieve the data that will power this app, you'll need to send requests using the `axios` package to the Bands in Town, Spotify and OMDB APIs. You'll find these Node packages crucial for your assignment.
-
-   - [Node-Spotify-API](https://www.npmjs.com/package/node-spotify-api)
-
-   - [Axios](https://www.npmjs.com/package/axios)
-
-     - You'll use Axios to grab data from the [OMDB API](http://www.omdbapi.com) and the [Bands In Town API](http://www.artists.bandsintown.com/bandsintown-api)
-
-   - [Moment](https://www.npmjs.com/package/moment)
-
-   - [DotEnv](https://www.npmjs.com/package/dotenv)
-
-## Submission Guide
-
-Create and use a standard GitHub repository. As this is a CLI App, it cannot be deployed to GitHub pages or Heroku. This time you'll need to include screenshots, a GIF, and/or a video showing us that you have the app working with no bugs. You can include these screenshots/GIFs or a link to a video in a `README.md` file.
-
-- Include screenshots (or a GIF/Video) of the typical user flow of your application. Make sure to include the use of Spotify, Bands in Town, and OMDB.
-
-- Include any other screenshots you deem necessary to help someone who has never been introduced to your application understand the purpose and function of it. This is how you will communicate to potential employers/other developers in the future what you built and why, and to show how it works.
-
-- Because screenshots (and well-written READMEs) are extremely important in the context of GitHub, this will be part of the grading.
-
-If you haven't written a markdown file yet, [click here for a rundown](https://guides.github.com/features/mastering-markdown/), or just take a look at the raw file of these instructions.
-
-Make it so liri.js can take in one of the following commands:
+LIRI can take any of the following commands, as well as an indeterminately long argument (the `this`) for the command.
 
 - `concert-this`
 
@@ -48,79 +16,65 @@ Make it so liri.js can take in one of the following commands:
 
 - `do-what-it-says`
 
-### What Each Command Should Do
+### What Will It Do?
 
-1. `node liri.js concert-this <artist/band name here>`
+`node liri.js concert-this <artist/band name here>`
 
-   - This will search the Bands in Town Artist Events API (`"https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp"`) for an artist and render the following information about each event to the terminal:
+- LIRI will search the Bands in Town Artist Events API for an artist and render the following information about each concert event to the terminal:
 
-     - Name of the venue
+  - Name of the venue
+  - Venue location
+  - Date of the Event
 
-     - Venue location
+- If the user doesn't know who to see, they will be recommended Backstreet Boys, because they will have _**a lot**_ of opportunities to see them!
 
-     - Date of the Event (use moment to format this as "MM/DD/YYYY")
+`node liri.js spotify-this-song '<song name here, optionally also artists, etc. for specificity>'`
 
-2. `node liri.js spotify-this-song '<song name here>'`
+- LIRI will show the following information about the song in the terminal/bash window:
 
-   - This will show the following information about the song in your terminal/bash window
+  - Artist
+  - The song's name
+  - A preview link of the song from Spotify
+  - The album that the song is from
 
-     - Artist(s)
+- Thanks to the **boundless wisdom** of the boot camp instructional staff, LIRI defaults to "The Sign" by Ace of Base.
 
-     - The song's name
+- LIRI utilizes the `node-spotify-api` package in order to retrieve song information from the Spotify API.
 
-     - A preview link of the song from Spotify
+`node liri.js movie-this '<movie name here>'`
 
-     - The album that the song is from
+- LIRI will happily output the following information to the terminal/bash window using the `axios` package to retrieve this data from the OMDB API:
 
-   - If no song is provided then your program will default to "The Sign" by Ace of Base. AMAZING
+  - Title of the movie
+  - Year the movie came out
+  - IMDB Rating of the movie
+  - Rotten Tomatoes Rating of the movie
+  - Country where the movie was produced
+  - Language of the movie
+  - Plot of the movie
+  - Actors in the movie
 
-   - You will utilize the [node-spotify-api](https://www.npmjs.com/package/node-spotify-api) package in order to retrieve song information from the Spotify API.
+- If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody,' because it's rumored to be amazing
 
-   - The Spotify API requires you sign up as a developer to generate the necessary credentials. You can follow these steps in order to generate a **client id** and **client secret**:
+`node liri.js do-what-it-says`
 
-   - Step One: Visit <https://developer.spotify.com/my-applications/#!/>
+- LIRI will use the `fs` node package to take the content of `random.txt` and then use it to call one of LIRI's commands.
 
-   - Step Two: Either login to your existing Spotify account or create a new one (a free account is fine) and log in.
+- The user is welcome to edit the text in random.txt to test out the feature for movie-this and concert-this.
+  _Attempts to create an infinite loop by writing 'do-what-it-says' will **not** be tolerated_.
 
-   - Step Three: Once logged in, navigate to <https://developer.spotify.com/my-applications/#!/applications/create> to register a new application to be used with the Spotify API. You can fill in whatever you'd like for these fields. When finished, click the "complete" button.
+### _There Are Included Bonus Features?_
 
-   - Step Four: On the next screen, scroll down to where you see your client id and client secret. Copy these values down somewhere, you'll need them to use the Spotify API and the [node-spotify-api package](https://www.npmjs.com/package/node-spotify-api).
+- In addition to logging the data to the terminal/bash window, the data is handily appended to a file called `log.txt`, using a convention to split input into usable arrays of data:
 
-3. `node liri.js movie-this '<movie name here>'`
+  - Each instance of the the program's execution is separated by `;;;;`.
+  - Each instance of logging within an execution is separated by `;;;`.
+  - Each log is split into two sections to separate the command and the argument by `;;`.
 
-   - This will output the following information to your terminal/bash window:
+- This convention allows later splitting of the `log.txt` string for reconstruction of the individual inputs and program outputs.
 
-     ```
-       * Title of the movie.
-       * Year the movie came out.
-       * IMDB Rating of the movie.
-       * Rotten Tomatoes Rating of the movie.
-       * Country where the movie was produced.
-       * Language of the movie.
-       * Plot of the movie.
-       * Actors in the movie.
-     ```
+### **Sweet, There's More!**
 
-   - If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
+- _We all_ know how hard it is to remember command line syntax, or use proper orthography. LIRI knows we're _only_ human, and uses the `inquirer` node package to figure out what we mean, and give us what we want.
 
-     - If you haven't watched "Mr. Nobody," then you should: <http://www.imdb.com/title/tt0485947/>
-
-     - It's on Netflix!
-
-   - You'll use the `axios` package to retrieve data from the OMDB API. Like all of the in-class activities, the OMDB API requires an API key. You may use `trilogy`.
-
-4. `node liri.js do-what-it-says`
-
-   - Using the `fs` Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
-
-     - It should run `spotify-this-song` for "I Want it That Way," as follows the text in `random.txt`.
-
-     - Edit the text in random.txt to test out the feature for movie-this and concert-this.
-
-### BONUS
-
-- In addition to logging the data to your terminal/bash window, output the data to a .txt file called `log.txt`.
-
-- Make sure you append each command you run to the `log.txt` file.
-
-- Do not overwrite your file each time you run a command.
+- Check out [the video demo!](https://youtu.be/NPm3gM-kfso)-- if you don't have six minutes, run it at double speed!

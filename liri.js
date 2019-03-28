@@ -1,4 +1,4 @@
-// on loading
+// load the requirements
 require("dotenv").config();
 const keys = require("./keys.js");
 const fs = require("fs");
